@@ -1,113 +1,174 @@
-import Image from 'next/image'
+'use client'
+import { Container } from "postcss";
+import { Profiler, useEffect, useMemo, useRef, useState } from "react";
+import styles from '../app/mainPage.module.css'
+import { userAgent } from "next/server";
+
 
 export default function Home() {
+  const [password, setPassword] = useState('');
+  const [color1, setColor1] = useState('azure');
+  const [color2, setColor2] = useState('azure');
+  const [color3, setColor3] = useState('azure');
+  const [color4, setColor4] = useState('azure');
+  let count = 0;
+  let flag1 = true;
+
+  const passwordRef = useRef('')
+  function containsUppercase(str) {
+    return /[A-Z]/.test(str);
+  }
+
+
+  function isUpperCase(str) {
+    if (str === str.toLowerCase()) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+
+
+  function hasNumber(str) {
+    const arrayStr = str.split("");
+    let result = 0;
+
+    arrayStr.forEach((item) => {
+      for (let i = 0; i <= 9; i++) {
+        if (Number(item) === i) {
+          result = 1;
+          break;
+        }
+      }
+    })
+    return result
+    // return /\d/.test(str);
+  }
+
+  function containsSpecialChars(str) {
+
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    // const specialChars = ["/","[", "\"","\'","`","!","@",'#','$','%','^','&','*','(',')','_','+','\\','-','=','[','\\',']','{','}',';',':',',"',',','.','<','>','\','/','?','~',']','/'];
+    // const arrayStr = str.split("");
+    // console.log(typeof specialChars);
+    // const arraySpc = specialChars.split("");
+    // let result = 0;
+
+    // arrayStr.forEach((item) => {
+    //   arraySpc.forEach((el) => {
+    //     if (item === el) {
+    //       result = 1;
+
+    //     }
+    //   })
+    // })
+    // return result
+    return specialChars.test(str);
+  }
+
+  let a = 'A'
+  // console.log(a.charCode());
+  const handleChange = () => {
+    let upperCase = false;
+    let number = false;
+    let special = false;
+
+    // upperCase = containsUppercase(passwordRef.current.value) ? true : false;
+    let up = isUpperCase(passwordRef.current.value);
+    // console.log(up);
+    // number = hasNumber(passwordRef.current.value) ? true : false;
+    hasNumber(passwordRef.current.value)
+    special = containsSpecialChars(passwordRef.current.value) ? true : false;
+
+    if (!(passwordRef.current.value === '')) {
+
+      setColor1('green');
+    } else {
+      setColor1('azure');
+    }
+
+
+    if (upperCase) {
+      if (flag1) {
+        count++;
+        flag1 = false;
+      }
+      setColor2('green');
+    } else {
+      setColor2('azure');
+    }
+    if (number) {
+      setColor3('green');
+    } else {
+      setColor3('azure');
+    }
+    if (special) {
+      setColor4('green');
+    } else {
+      setColor4('azure');
+    }
+
+    // console.log(`Up: ${upperCase}, Num: ${number}, Num: ${special}`);
+    // if (!upperCase || !number || !special) return;
+    // passwordRef.current = password;
+    // console.log(passwordRef.current);
+  }
+
+  // const x = useEffect(
+  //   () => {
+  //     const boxes = document.querySelectorAll(`${styles.box}`)
+  //     console.log(boxes);
+  //     boxes.forEach((item) => {
+  //       console.log(`a`);
+  //       item.style.backgroundColor = color1;
+  //     })
+  //   }, [])
+
+
+  const DisplayP = () => {
+    let a = '';
+    // if (passwordRef.current == undefined) {
+    //   a = 'undefined'
+    // } else {
+    //   a = passwordRef.current
+    // }
+    return <div> Your password is: {a}</div>
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <Profiler id="Navigation" onRender={() => {
+      console.log('render')
+    }}>
+      <div className={styles.container} >
+        <h1>Password Input</h1>
+        <input
+          ref={passwordRef}
+          type={'text'}
+          onChange={handleChange}
         />
-      </div>
+        <div className="flex ">
+          <div id="box1" className={styles.box} style={{ backgroundColor: color1 }}></div>
+          <div id="box2" className={styles.box} style={{ backgroundColor: color2 }}></div>
+          <div id="box3" className={styles.box} style={{ backgroundColor: color3 }}></div>
+          <div id="box4" className={styles.box} style={{ backgroundColor: color4 }}></div>
+        </div>
+        <button
+          className="border-[5px] rounded w-[100px]"
+          onClick={
+            () => {
+              setPassword(passwordRef.current);
+            }
+          }>Set</button>
+        {console.log(passwordRef.current.value)}
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        <DisplayP></DisplayP>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        {/* {console.log(`rendering`)} */}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+
+      </div >
+    </Profiler>
   )
 }
